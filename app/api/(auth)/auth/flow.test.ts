@@ -4,8 +4,8 @@ import * as logoutRoute from "@/app/api/(auth)/auth/logout/route"
 import * as meRoute from "@/app/api/(auth)/auth/me/route"
 import { resetLoginThrottleStoreForTests } from "@/app/api/(auth)/_service/auth-rate-limit-service"
 
-const OWNER_EMAIL = "owner@buildingstore.com"
-const OWNER_PASSWORD = "ownerpass1"
+const ADMIN_KASIR_EMAIL = "kasir@cabang-a.com"
+const ADMIN_KASIR_PASSWORD = "kasirpass1"
 
 function readCookiePair(setCookieHeader: string | null): string {
   if (!setCookieHeader) return ""
@@ -26,7 +26,7 @@ describe("auth flow routes", () => {
       new Request("https://example.com/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: OWNER_EMAIL, password: OWNER_PASSWORD }),
+        body: JSON.stringify({ email: ADMIN_KASIR_EMAIL, password: ADMIN_KASIR_PASSWORD }),
       })
     )
 
@@ -101,7 +101,7 @@ describe("auth flow routes", () => {
       new Request("https://example.com/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: OWNER_EMAIL, password: "wrong-password" }),
+        body: JSON.stringify({ email: ADMIN_KASIR_EMAIL, password: "wrong-password" }),
       })
     )
 

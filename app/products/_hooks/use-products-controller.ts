@@ -40,7 +40,7 @@ export function useProductsController(input?: {
   }, [])
 
   const { user } = useAuth()
-  const role: Role = user?.role ?? "viewer"
+  const role: Role = user?.role ?? "admin-penjualan"
   const perm = permissionOf(role, "categories")
   const isCRUD = perm === "CRUD"
 

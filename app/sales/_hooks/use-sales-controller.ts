@@ -92,7 +92,7 @@ export function useSalesController() {
 
   const { user } = useAuth()
   const roleValue = typeof user?.role === "string" ? user.role : ""
-  const role: Role = isRole(roleValue) ? roleValue : "viewer"
+  const role: Role = isRole(roleValue) ? roleValue : "admin-penjualan"
   const perm = permissionOf(role, "sales")
   const isCRUD = perm === "CRUD"
 

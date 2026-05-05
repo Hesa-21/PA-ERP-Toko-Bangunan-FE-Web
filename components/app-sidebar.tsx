@@ -97,7 +97,7 @@ function isItemActive(pathname: string, url: string): boolean {
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const pathname = usePathname()
   const { user, logout } = useAuth()
-  const role: Role = ((user?.role as Role | undefined) ?? "viewer")
+  const role: Role = ((user?.role as Role | undefined) ?? "admin-penjualan")
 
   const sections = NAVIGATION_SECTIONS.map((section) => ({
     ...section,

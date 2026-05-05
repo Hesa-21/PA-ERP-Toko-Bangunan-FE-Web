@@ -71,7 +71,7 @@ describe("sales detail service", () => {
     expect(result.doc.totals.remaining).toBe(150)
   })
 
-  it("allows void posted sale for non-admin role within same day", () => {
+  it("allows void posted sale within same day", () => {
     vi.spyOn(mockDb, "getSale").mockReturnValue(
       makeDoc({ id: "S-2", status: "POSTED", createdAt: "2026-04-08T10:00:00.000Z" }) as never
     )
@@ -82,7 +82,7 @@ describe("sales detail service", () => {
       branch: "b_1",
       saleId: "S-2",
       userName: "Kasir",
-      userRole: "viewer",
+      userRole: "admin-penjualan",
       now: new Date("2026-04-08T11:00:00.000Z"),
     })
 
@@ -140,7 +140,7 @@ describe("sales detail service", () => {
       branch: "b_1",
       saleId: "S-5",
       userName: "Kasir",
-      userRole: "viewer",
+      userRole: "admin-penjualan",
       now: new Date("2026-04-10T11:00:00.000Z"),
     })
 

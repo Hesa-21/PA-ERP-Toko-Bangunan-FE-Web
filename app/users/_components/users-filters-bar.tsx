@@ -55,7 +55,6 @@ export function UsersFiltersBar(props: UsersFiltersBarProps) {
         <SelectContent>
           <SelectItem value="all">Semua Peran</SelectItem>
           <SelectItem value="admin-penjualan">Admin Penjualan</SelectItem>
-          <SelectItem value="viewer">Pembaca (Penjualan)</SelectItem>
         </SelectContent>
       </Select>
       <Select

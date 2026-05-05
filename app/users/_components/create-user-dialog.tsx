@@ -113,7 +113,6 @@ export function CreateUserDialog(props: CreateUserDialogProps) {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="admin-penjualan">Admin Penjualan</SelectItem>
-                <SelectItem value="viewer">Pembaca (Penjualan)</SelectItem>
               </SelectContent>
             </Select>
           </div>

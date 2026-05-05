@@ -1,5 +1,5 @@
-export type Role = "admin-penjualan" | "viewer"
+export type Role = "admin-penjualan"
 
 export function isRole(value: string): value is Role {
-  return value === "admin-penjualan" || value === "viewer"
+  return value === "admin-penjualan"
 }

@@ -9,7 +9,7 @@ export function PermissionGate({ module, children }: { module: ModuleKey, childr
   const { user } = useAuth()
   const router = useRouter()
 
-  const role: Role = (user?.role as Role | undefined) ?? 'viewer'
+  const role: Role = (user?.role as Role | undefined) ?? 'admin-penjualan'
   const allowed = canView(role, module)
 
   useEffect(() => {

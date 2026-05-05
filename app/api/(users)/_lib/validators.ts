@@ -2,7 +2,7 @@ import { z } from "zod"
 import type { Role } from "@/lib/auth/rbac"
 import { getPasswordErrorCode, normalizeEmail } from "@/lib/auth/user-validation"
 
-const ROLE_VALUES: Role[] = ["admin-penjualan", "viewer"]
+const ROLE_VALUES: Role[] = ["admin-penjualan"]
 const STATUS_VALUES = ["all", "active", "inactive"] as const
 const USERS_LIST_MAX_LIMIT = 200
 
@@ -70,7 +70,7 @@ const createUserBodySchema = z.object({
   name: z.string().optional(),
   email: z.string().optional(),
   password: z.string().optional(),
-  role: z.enum(["admin-penjualan", "viewer"]).optional(),
+  role: z.enum(["admin-penjualan"]).optional(),
   branch: z.string().optional(),
 })
 

@@ -735,38 +735,12 @@ function createSeedPassword(value: string): string {
 
 const DEFAULT_USERS_SEED: ReadonlyArray<Readonly<MockUserRow>> = [
   {
-    id: "u1",
-    name: "Owner User",
-    email: "owner@buildingstore.com",
-    role: "admin-penjualan",
-    password: createSeedPassword("ownerpass1"),
-    active: true,
-  },
-  {
     id: "u2",
     name: "Admin Kasir",
     email: "kasir@cabang-a.com",
     role: "admin-penjualan",
     branch: "cabang-a",
     password: createSeedPassword("kasirpass1"),
-    active: true,
-  },
-  {
-    id: "u3",
-    name: "Admin Gudang",
-    email: "gudang@cabang-a.com",
-    role: "admin-penjualan",
-    branch: "cabang-a",
-    password: createSeedPassword("gudangpass1"),
-    active: true,
-  },
-  {
-    id: "u4",
-    name: "Sales Viewer",
-    email: "sales@cabang-a.com",
-    role: "viewer",
-    branch: "cabang-a",
-    password: createSeedPassword("viewerpass1"),
     active: true,
   },
 ]

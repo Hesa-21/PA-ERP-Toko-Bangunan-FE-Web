@@ -96,28 +96,6 @@ describe("users service layering", () => {
     )
   })
 
-  it("keeps branch for viewer users", () => {
-    const deps = createRepositorySpy()
-
-    createUserRecord(
-      {
-        name: "Kasir",
-        email: "kasir@example.com",
-        password: "StrongPass123",
-        role: "viewer",
-        branch: "cabang-a",
-      },
-      { repository: deps.repository }
-    )
-
-    expect(deps.createUser).toHaveBeenCalledWith(
-      expect.objectContaining({
-        role: "viewer",
-        branch: "cabang-a",
-      })
-    )
-  })
-
   it("builds patch payload with only allowed fields", () => {
     const deps = createRepositorySpy()
 

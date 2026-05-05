@@ -37,17 +37,17 @@ describe("auth session service", () => {
     delete process.env.NEXT_PUBLIC_AUTH_PROVIDER
 
     const session = buildSession({
-      id: "u1",
-      name: "Owner User",
-      email: "owner@buildingstore.com",
+      id: "u2",
+      name: "Admin Kasir",
+      email: "kasir@cabang-a.com",
       role: "admin-penjualan",
     })
 
     const cookieHeader = serializeSessionCookie(session)
     const resolved = resolveSessionFromRequest({ cookieHeader })
 
-    expect(resolved.user?.id).toBe("u1")
-    expect((resolved.session as { user?: { id?: string } } | null)?.user?.id).toBe("u1")
+    expect(resolved.user?.id).toBe("u2")
+    expect((resolved.session as { user?: { id?: string } } | null)?.user?.id).toBe("u2")
   })
 
   it("builds logout cookies for mock provider", () => {

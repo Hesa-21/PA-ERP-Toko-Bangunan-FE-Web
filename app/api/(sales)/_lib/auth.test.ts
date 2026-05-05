@@ -1,7 +1,6 @@
 import { describe, expect, it } from "vitest"
 import { ensureSalesBranchAccess } from "@/app/api/(sales)/_lib/auth"
-
-type Role = "admin-penjualan" | "viewer"
+import type { Role } from "@/lib/auth/role"
 
 function createAllowedGuard(input?: { role?: Role; branch?: string }) {
   const role = input?.role ?? "admin-penjualan"
@@ -42,11 +41,6 @@ describe("sales auth guards", () => {
     }
 
     expect(payload.error?.code).toBe("NOT_FOUND")
-  })
-
-  it("allows viewer access to valid branch", () => {
-    const response = ensureSalesBranchAccess(createAllowedGuard({ role: "viewer", branch: "cabang-a" }), "b_1")
-    expect(response).toBeNull()
   })
 
   it("allows valid branch for admin role", () => {

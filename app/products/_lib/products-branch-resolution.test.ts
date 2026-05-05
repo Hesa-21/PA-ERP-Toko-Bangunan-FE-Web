@@ -109,22 +109,6 @@ describe("resolveBranchFromAuthCookies", () => {
     expect(resolved?.id).toBe("b_1")
   })
 
-  it("returns undefined for mock viewer when no valid branch is available", () => {
-    process.env.NEXT_PUBLIC_AUTH_PROVIDER = "mock"
-
-    const session = buildSession({
-      id: "u-2",
-      name: "Sales Viewer",
-      email: "kasir@example.com",
-      role: "viewer",
-    })
-
-    const mockCookie = serializeSessionCookie(session).split(";")[0]
-    const resolved = resolveBranchFromAuthCookies(mockCookie)
-
-    expect(resolved).toBeUndefined()
-  })
-
   it("falls back to default branch for mock admin-penjualan", () => {
     process.env.NEXT_PUBLIC_AUTH_PROVIDER = "mock"
 

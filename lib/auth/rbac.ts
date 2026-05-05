@@ -24,14 +24,6 @@ const CENTRALIZED_PERMISSIONS: Record<ModuleKey, Permission> = {
 
 export const ROLE_MATRIX: Record<Role, Record<ModuleKey, Permission>> = {
   "admin-penjualan": { ...CENTRALIZED_PERMISSIONS },
-  viewer: {
-    dashboard: "R",
-    pos: "R",
-    categories: "R",
-    sales: "R",
-    users: "R",
-    "reports.sales": "R",
-  },
 }
 
 export function canView(role: Role, mod: ModuleKey): boolean {

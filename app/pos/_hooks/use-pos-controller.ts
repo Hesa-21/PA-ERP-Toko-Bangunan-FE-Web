@@ -45,7 +45,7 @@ type UsePosControllerResult = ReturnType<typeof usePos> & {
 export function usePosController(): UsePosControllerResult {
   const router = useRouter()
   const { user } = useAuth()
-  const role: Role = (user?.role as Role | undefined) ?? "viewer"
+  const role: Role = (user?.role as Role | undefined) ?? "admin-penjualan"
   const perm = permissionOf(role, "pos")
   const isCRUD = perm === "CRUD"
 

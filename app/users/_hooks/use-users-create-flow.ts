@@ -29,14 +29,14 @@ export function useUsersCreateFlow(input: UsersCreateFlowInput) {
   const [cEmail, setCEmail] = useState("")
   const [cPassword, setCPassword] = useState("")
   const [cShowPassword, setCShowPassword] = useState(false)
-  const [cRole, setCRole] = useState<Role>("viewer")
+  const [cRole, setCRole] = useState<Role>("admin-penjualan")
   const [cBranch, setCBranch] = useState<string>("cabang-a")
 
   function resetCreateForm() {
     setCName("")
     setCEmail("")
     setCPassword("")
-    setCRole("viewer")
+    setCRole("admin-penjualan")
     setCBranch("cabang-a")
   }
 

@@ -21,7 +21,7 @@ describe("authenticateLogin", () => {
 
     expect(() =>
       authenticateLogin({
-        email: "owner@buildingstore.com",
+        email: "kasir@cabang-a.com",
         password: "wrong-password",
       })
     ).toThrowError("INVALID_CREDENTIALS")
@@ -31,20 +31,20 @@ describe("authenticateLogin", () => {
 
   it("returns user and session when credentials are valid", () => {
     vi.mocked(verifyAuthCredentials).mockReturnValue({
-      id: "u1",
-      name: "Owner User",
-      email: "owner@buildingstore.com",
-      role: "super-admin",
+      id: "u2",
+      name: "Admin Kasir",
+      email: "kasir@cabang-a.com",
+      role: "admin-penjualan",
       password: "hashed",
       active: true,
     } as never)
 
     const mockedSession = {
       user: {
-        id: "u1",
-        name: "Owner User",
-        email: "owner@buildingstore.com",
-        role: "super-admin",
+        id: "u2",
+        name: "Admin Kasir",
+        email: "kasir@cabang-a.com",
+        role: "admin-penjualan",
       },
       defaultBranch: "",
       allowedBranches: [],
@@ -54,23 +54,23 @@ describe("authenticateLogin", () => {
     vi.mocked(buildSession).mockReturnValue(mockedSession as never)
 
     const result = authenticateLogin({
-      email: "owner@buildingstore.com",
-      password: "ownerpass1",
+      email: "kasir@cabang-a.com",
+      password: "kasirpass1",
     })
 
     expect(verifyAuthCredentials).toHaveBeenCalledWith({
-      email: "owner@buildingstore.com",
-      password: "ownerpass1",
+      email: "kasir@cabang-a.com",
+      password: "kasirpass1",
     })
     expect(buildSession).toHaveBeenCalledWith({
-      id: "u1",
-      name: "Owner User",
-      email: "owner@buildingstore.com",
-      role: "super-admin",
+      id: "u2",
+      name: "Admin Kasir",
+      email: "kasir@cabang-a.com",
+      role: "admin-penjualan",
       branch: undefined,
     })
 
-    expect(result.user.id).toBe("u1")
+    expect(result.user.id).toBe("u2")
     expect(result.session).toBe(mockedSession)
   })
 })

@@ -13,7 +13,7 @@ async function main() {
   const login = await call("/api/auth/login", {
     method: "POST",
     headers: { "content-type": "application/json" },
-    body: JSON.stringify({ email: "owner@buildingstore.com", password: "ownerpass1" }),
+    body: JSON.stringify({ email: "kasir@cabang-a.com", password: "kasirpass1" }),
   })
 
   const setCookie = login.headers?.get("set-cookie") ?? ""
