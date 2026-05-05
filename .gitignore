@@ -1,0 +1,60 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# Dependencies
+/node_modules/
+
+# Next.js build output
+/.next/
+/out/
+
+# Production / build output
+/build
+
+# Vercel
+/.vercel
+
+# Debug / logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+*.log
+
+# Environment files (ignore all envs but allow an example)
+.env*
+!.env.example
+
+# Editor directories and project files
+.vscode/
+.idea/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# TypeScript cache
+*.tsbuildinfo
+next-env.d.ts
+
+# Caches
+/.cache
+/.parcel-cache
+/.turbo
+.eslintcache
+
+# Test artifacts (keep test source files committed)
+/coverage
+/.nyc_output
+/test-results
+/playwright-report
+/vitest-report
+junit.xml
+junit-*.xml
+*.lcov
+
+# Misc
+*.local
+*.swp
+*~
+
+# Note: keep pnpm lockfile committed (pnpm-lock.yaml) so do not ignore it here
