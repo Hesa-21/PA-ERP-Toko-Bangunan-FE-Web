@@ -25,12 +25,9 @@ import type { PriceTier } from "@/lib/domain/types"
 import type {
   CategoryDto,
   PosProductDto,
-  PosWarehouseZoneDto,
-  PosWarehouseZoneStockSummaryDto,
 } from "@/app/pos/_api-clients/pos"
-import { getProductZoneDisplayLabel } from "@/lib/client/warehouse-zone-display"
 
-export type PosSortField = "name" | "sku" | "category" | "zone" | "price" | "stock"
+export type PosSortField = "name" | "sku" | "category" | "price" | "stock"
 
 type PosProductListProps = {
   products: PosProductDto[]
@@ -60,8 +57,6 @@ type PosProductListProps = {
   onPageChange: (updater: number | ((prev: number) => number)) => void
   listContainerRef: React.RefObject<HTMLDivElement | null>
   onKeyDown: (e: React.KeyboardEvent<HTMLDivElement>) => void
-  zones: PosWarehouseZoneDto[]
-  zoneStocks: PosWarehouseZoneStockSummaryDto
 }
 
 export function PosProductList(props: PosProductListProps) {
@@ -93,8 +88,6 @@ export function PosProductList(props: PosProductListProps) {
     onPageChange,
     listContainerRef,
     onKeyDown,
-    zones,
-    zoneStocks,
   } = props
 
   return (
@@ -215,19 +208,6 @@ export function PosProductList(props: PosProductListProps) {
                   </button>
                 </TableHead>
                 <TableHead
-                  className="w-[15%]"
-                  aria-sort={sortBy === "zone" ? (sortDir === "asc" ? "ascending" : "descending") : "none"}
-                >
-                  <button
-                    type="button"
-                    className="inline-flex items-center gap-1 text-left"
-                    onClick={() => onSortChange("zone")}
-                  >
-                    Zona
-                    <span className="text-xs text-muted-foreground">{getSortIndicator("zone")}</span>
-                  </button>
-                </TableHead>
-                <TableHead
                   className="w-[15%] text-right"
                   aria-sort={sortBy === "price" ? (sortDir === "asc" ? "ascending" : "descending") : "none"}
                 >
@@ -259,18 +239,13 @@ export function PosProductList(props: PosProductListProps) {
             <TableBody>
               {products.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={7} className="text-center text-sm text-muted-foreground">
+                  <TableCell colSpan={6} className="text-center text-sm text-muted-foreground">
                     {isLoadingProducts ? "Memuat produk..." : "Tidak ada produk yang cocok."}
                   </TableCell>
                 </TableRow>
               ) : (
                 products.map((product, idx) => {
                   const isSelected = idx === selectedIndex
-                  const zoneName = getProductZoneDisplayLabel({
-                    sku: product.sku,
-                    zoneStocks,
-                    zones,
-                  })
 
                   return (
                     <TableRow
@@ -295,9 +270,6 @@ export function PosProductList(props: PosProductListProps) {
                         <Badge variant="secondary" className="text-[11px]">
                           {product.category}
                         </Badge>
-                      </TableCell>
-                      <TableCell>
-                        <span className="text-sm">{zoneName}</span>
                       </TableCell>
                       <TableCell className="text-right font-semibold text-blue-600">
                         Rp {product.prices[priceTier].toLocaleString()}

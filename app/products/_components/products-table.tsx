@@ -3,16 +3,12 @@
 import { Pencil, Trash2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { getProductZoneDisplayLabel } from "@/lib/client/warehouse-zone-display"
-import type { ProductDto, WarehouseZoneDto } from "@/app/products/_api-clients/products"
-import type { ZoneStocksDto } from "@/lib/domain/warehouse"
+import type { ProductDto } from "@/app/products/_api-clients/products"
 
 export function ProductsTable(props: {
   rows: ProductDto[]
   isLoading: boolean
   isCRUD: boolean
-  zones: WarehouseZoneDto[]
-  zoneStocks: ZoneStocksDto
   onEdit: (product: ProductDto) => void
   onDelete: (product: ProductDto) => void
 }) {
@@ -24,7 +20,6 @@ export function ProductsTable(props: {
             <TableHead>SKU</TableHead>
             <TableHead>Nama Produk</TableHead>
             <TableHead>Kategori</TableHead>
-            <TableHead>Zona</TableHead>
             <TableHead className="text-right">Stok Total</TableHead>
             <TableHead className="text-right">HPP</TableHead>
             <TableHead className="text-right">Harga Retail</TableHead>
@@ -36,7 +31,7 @@ export function ProductsTable(props: {
         <TableBody>
           {props.rows.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={10} className="text-center text-sm text-muted-foreground">
+              <TableCell colSpan={9} className="text-center text-sm text-muted-foreground">
                 {props.isLoading ? "Memuat produk..." : "Belum ada produk."}
               </TableCell>
             </TableRow>
@@ -46,13 +41,6 @@ export function ProductsTable(props: {
                 <TableCell className="font-medium">{p.sku}</TableCell>
                 <TableCell>{p.name}</TableCell>
                 <TableCell>{p.category ?? "-"}</TableCell>
-                <TableCell>
-                  {getProductZoneDisplayLabel({
-                    sku: p.sku,
-                    zoneStocks: props.zoneStocks,
-                    zones: props.zones,
-                  })}
-                </TableCell>
                 <TableCell className="text-right tabular-nums">{(p.stock ?? 0).toLocaleString()}</TableCell>
                 <TableCell className="text-right">{(p.hpp ?? 0).toLocaleString()}</TableCell>
                 <TableCell className="text-right">{p.prices.retail.toLocaleString()}</TableCell>

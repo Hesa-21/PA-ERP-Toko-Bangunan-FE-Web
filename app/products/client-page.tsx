@@ -34,12 +34,9 @@ export default function ProductsClientPage(input: {
   const {
     isCRUD,
     categories,
-    zones,
-    zoneStocks,
     productsLoadError,
     isLoadingCategories,
     categoriesError,
-    zonesError,
     saveCategory,
     removeCategory,
     saveProduct,
@@ -211,14 +208,11 @@ export default function ProductsClientPage(input: {
                         onOpenAddProduct={openAddProduct}
                       />
                       {productsSearchError && <p className="mt-2 text-sm text-red-600">{productsSearchError}</p>}
-                      {zonesError && <p className="mt-2 text-sm text-red-600">{zonesError}</p>}
 
                       <ProductsTable
                         rows={productRows}
                         isLoading={isSearchingProducts}
                         isCRUD={isCRUD}
-                        zones={zones}
-                        zoneStocks={zoneStocks}
                         onEdit={openEditProduct}
                         onDelete={requestDeleteProduct}
                       />

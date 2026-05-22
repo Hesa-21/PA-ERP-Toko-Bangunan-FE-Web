@@ -6,7 +6,6 @@ import {
   productsApiCreateCategory,
   productsApiDelete,
   productsApiDeleteCategory,
-  productsApiFetchZones,
   productsApiList,
   productsApiListCategoriesWithUsage,
   productsApiUpdate,
@@ -15,13 +14,11 @@ import {
   type PriceTier,
   type ProductDto,
   type ProductCategoryWithUsageDto,
-  type WarehouseZoneDto,
 } from "@/app/products/_api-clients/products"
-import type { ZoneStocksDto } from "@/lib/domain"
 import type { ProductsInitialSnapshot } from "@/app/products/_lib/products-snapshot"
 import { getCentralBranchId } from "@/lib/single-branch"
 
-export type { CategoryDto, PriceTier, ProductDto, WarehouseZoneDto }
+export type { CategoryDto, PriceTier, ProductDto }
 
 export function useProducts(input: {
   initialSnapshot?: ProductsInitialSnapshot
@@ -51,31 +48,8 @@ export function useProducts(input: {
 
   const [isLoadingCategories, setIsLoadingCategories] = useState(false)
   const [categoriesError, setCategoriesError] = useState<string>("")
-  const [zonesError, setZonesError] = useState("")
-
-  const [zonesByBranch, setZonesByBranch] = useState<Record<string, WarehouseZoneDto[]>>(
-    hasInitialSnapshotForBranch
-      ? { [branchId]: input.initialSnapshot?.zones ?? [] }
-      : {}
-  )
-  const zones = useMemo(() => zonesByBranch[branchId] ?? [], [zonesByBranch, branchId])
-
-  const [zoneStocksByBranch, setZoneStocksByBranch] = useState<Record<string, ZoneStocksDto>>(
-    hasInitialSnapshotForBranch
-      ? { [branchId]: input.initialSnapshot?.zoneStocks ?? ({} as ZoneStocksDto) }
-      : {}
-  )
-  const zoneStocks = useMemo(() => zoneStocksByBranch[branchId] ?? ({} as ZoneStocksDto), [zoneStocksByBranch, branchId])
-
-  const [defaultWarehouseIdByBranch, setDefaultWarehouseIdByBranch] = useState<Record<string, string>>(
-    hasInitialSnapshotForBranch
-      ? { [branchId]: input.initialSnapshot?.defaultWarehouseId ?? "" }
-      : {}
-  )
-  const defaultWarehouseId = defaultWarehouseIdByBranch[branchId] ?? ""
 
   const [skipInitialCategoriesReload, setSkipInitialCategoriesReload] = useState(hasInitialSnapshotForBranch)
-  const [skipInitialZonesReload, setSkipInitialZonesReload] = useState(hasInitialSnapshotForBranch)
 
   const reloadCategories = useCallback(async () => {
     const seq = beginCategoriesRequest()
@@ -103,30 +77,9 @@ export function useProducts(input: {
     }
   }, [beginCategoriesRequest, branchId, hasValidBranch, isLatestCategoriesRequest])
 
-  const reloadZones = useCallback(async () => {
-    if (!hasValidBranch) {
-      setZonesError("")
-      return
-    }
-
-    setZonesError("")
-    try {
-      const { zones: nextZones, defaultWarehouseId: nextDefaultWarehouseId, zoneStocks: nextZoneStocks } =
-        await productsApiFetchZones({ includeMovements: false })
-      setZonesByBranch((prev) => ({ ...prev, [branchId]: nextZones }))
-      setDefaultWarehouseIdByBranch((prev) => ({ ...prev, [branchId]: nextDefaultWarehouseId }))
-      setZoneStocksByBranch((prev) => ({ ...prev, [branchId]: nextZoneStocks }))
-    } catch (err: unknown) {
-      setZonesByBranch((prev) => ({ ...prev, [branchId]: [] }))
-      setDefaultWarehouseIdByBranch((prev) => ({ ...prev, [branchId]: "" }))
-      setZoneStocksByBranch((prev) => ({ ...prev, [branchId]: {} as ZoneStocksDto }))
-      setZonesError(err instanceof Error ? err.message : "Gagal memuat data zona gudang.")
-    }
-  }, [branchId, hasValidBranch])
-
   const reloadAll = useCallback(async () => {
-    await Promise.all([reloadCategories(), reloadZones()])
-  }, [reloadCategories, reloadZones])
+    await reloadCategories()
+  }, [reloadCategories])
 
   useEffect(() => {
     // Invalidate pending category requests from previous branch before new fetch starts.
@@ -147,20 +100,6 @@ export function useProducts(input: {
     }
     void reloadCategories()
   }, [branchId, hasValidBranch, reloadCategories, skipInitialCategoriesReload])
-
-  useEffect(() => {
-    if (!hasValidBranch) {
-      setZonesError("")
-      setSkipInitialZonesReload(false)
-      return
-    }
-
-    if (skipInitialZonesReload) {
-      setSkipInitialZonesReload(false)
-      return
-    }
-    void reloadZones()
-  }, [branchId, hasValidBranch, reloadZones, skipInitialZonesReload])
 
   const saveCategory = useCallback(
     async (input: { id?: string; name: string }) => {
@@ -277,14 +216,8 @@ export function useProducts(input: {
 
     isLoadingCategories,
     categoriesError,
-    zonesError,
-
-    zones,
-    zoneStocks,
-    defaultWarehouseId,
 
     reloadCategories,
-    reloadZones,
     reloadAll,
     queryProducts,
 

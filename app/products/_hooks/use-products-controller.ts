@@ -46,13 +46,9 @@ export function useProductsController(input?: {
 
   const {
     categories,
-    zones,
-    zoneStocks,
-    defaultWarehouseId,
     productsError: productsLoadError,
     isLoadingCategories,
     categoriesError,
-    zonesError,
     saveCategory,
     removeCategory,
     saveProduct,
@@ -341,14 +337,9 @@ export function useProductsController(input?: {
     isOrderFilterValue,
 
     categories,
-    zones,
-    zoneStocks,
-    defaultWarehouseId,
-
     productsLoadError,
     isLoadingCategories,
     categoriesError,
-    zonesError,
 
     saveCategory,
     removeCategory,

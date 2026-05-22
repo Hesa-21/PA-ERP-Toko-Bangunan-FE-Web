@@ -1,10 +1,8 @@
 import { apiFetchJson } from "@/lib/client/http"
-import { fetchWarehouseSnapshot } from "@/lib/client/warehouse"
-import type { CategoryDto, PriceTier, ProductDto, WarehouseZoneDto, ZoneStocksDto } from "@/lib/domain"
+import type { CategoryDto, PriceTier, ProductDto } from "@/lib/domain"
 
 export type { CategoryDto, PriceTier, ProductDto } from "@/lib/domain"
 
-export type { WarehouseZoneDto, ZoneStocksDto } from "@/lib/domain"
 
 export async function fetchMasterProducts(
   opts?: { signal?: AbortSignal }
@@ -151,12 +149,3 @@ export async function deleteProductCategory(input: { id: string }): Promise<void
   )
 }
 
-export async function fetchWarehouseZonesForReceiving(input: {
-  includeMovements?: boolean
-}, opts?: { signal?: AbortSignal }): Promise<{ zones: WarehouseZoneDto[]; defaultWarehouseId: string; zoneStocks: ZoneStocksDto }> {
-  const snap = await fetchWarehouseSnapshot(
-    { includeMovements: input.includeMovements ?? false },
-    { signal: opts?.signal }
-  )
-  return { zones: snap.zones, defaultWarehouseId: snap.defaultWarehouseId, zoneStocks: snap.zoneStocks }
-}

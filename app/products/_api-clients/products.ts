@@ -5,14 +5,13 @@ import {
   deleteProductCategory,
   fetchMasterProducts,
   fetchProductCategories,
-  fetchWarehouseZonesForReceiving,
   updateMasterProduct,
   updateProductCategory,
 } from "@/lib/client/master-data-products"
 import { apiFetchJson } from "@/lib/client/http"
-import type { CategoryDto, PriceTier, ProductDto, WarehouseZoneDto } from "@/lib/domain"
+import type { CategoryDto, PriceTier, ProductDto } from "@/lib/domain"
 
-export type { CategoryDto, PriceTier, ProductDto, WarehouseZoneDto }
+export type { CategoryDto, PriceTier, ProductDto }
 
 export type ProductCategoryWithUsageDto = CategoryDto & {
   productCount: number
@@ -108,4 +107,3 @@ export const productsApiListCategories = fetchProductCategories
 export const productsApiCreateCategory = createProductCategory
 export const productsApiUpdateCategory = updateProductCategory
 export const productsApiDeleteCategory = deleteProductCategory
-export const productsApiFetchZones = fetchWarehouseZonesForReceiving

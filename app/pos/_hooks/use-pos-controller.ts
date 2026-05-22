@@ -8,7 +8,7 @@ import type { PriceTier } from "@/lib/domain/types"
 import { usePos } from "@/app/pos/_hooks/use-pos"
 import { PRICE_TIER_LABEL } from "@/app/pos/_lib/pos-utils"
 
-type SortField = "name" | "sku" | "category" | "zone" | "price" | "stock"
+type SortField = "name" | "sku" | "category" | "price" | "stock"
 
 type UsePosControllerResult = ReturnType<typeof usePos> & {
   ui: {

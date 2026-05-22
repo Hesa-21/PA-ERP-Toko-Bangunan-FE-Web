@@ -50,8 +50,6 @@ export default function PosClientPage() {
                 onPageChange={c.uiActions.setPage}
                 listContainerRef={c.refs.listContainerRef}
                 onKeyDown={c.uiActions.handleKeyDownOnList}
-                zones={c.zones}
-                zoneStocks={c.zoneStocks}
               />
             </div>
 
