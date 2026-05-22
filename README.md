@@ -1,5 +1,5 @@
 ﻿# PA-ERP-Toko-Bangunan-FE-Web
-### Screenshot mock-up untuk setiap halaman atau modul:
+### Screenshot mock-up untuk setiap halaman modul:
 1. Sign-in/Login Page:
    <img width="960" height="507" alt="image" src="https://github.com/user-attachments/assets/01a6b480-88a3-4643-9c25-3fdd9bfbcd46" />
 2. Dashboard Page:
