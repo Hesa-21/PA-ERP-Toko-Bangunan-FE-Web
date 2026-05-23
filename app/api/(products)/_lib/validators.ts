@@ -99,6 +99,7 @@ const productsBodySchema = bodyBaseSchema.extend({
   sku: z.string().optional(),
   name: z.string().optional(),
   categoryId: z.string().optional(),
+  stockQuantity: finiteNumber.optional(),
   prices: pricesSchema.optional(),
   hpp: finiteNumber.optional(),
 })
@@ -132,6 +133,7 @@ export type ProductMutationPayload = {
   sku: string
   name: string
   categoryId?: string
+  stockQuantity?: number
   prices: Record<PriceTier, number>
   hpp: number
 }

@@ -137,6 +137,7 @@ export function validateCreateProductInput(input: {
   sku: string
   name: string
   prices: Partial<Record<PriceTier, number>>
+  stockQuantity: number
   hpp: number
 }) {
   if (!input.sku) return { ok: false as const, error: "SKU wajib." }
@@ -154,6 +155,10 @@ export function validateCreateProductInput(input: {
     return { ok: false as const, error: "HPP wajib diisi (>= 0)." }
   }
 
+  if (!Number.isInteger(input.stockQuantity) || input.stockQuantity < 0) {
+    return { ok: false as const, error: "Kuantitas stok wajib diisi (bilangan bulat >= 0)." }
+  }
+
   return {
     ok: true as const,
     prices: { retail, partai, cabang },
@@ -166,6 +171,7 @@ export function createProduct(input: {
   categoryId?: string
   prices: Record<PriceTier, number>
   hpp: number
+  stockQuantity: number
 }) {
   return addProduct({
     ...input,
@@ -176,6 +182,7 @@ export function createProduct(input: {
 export function validateUpdateProductInput(input: {
   sku: string
   prices: Partial<Record<PriceTier, number>>
+  stockQuantity?: number
   hpp?: number
 }) {
   if (!input.sku) return { ok: false as const, error: "SKU wajib." }
@@ -192,6 +199,10 @@ export function validateUpdateProductInput(input: {
     return { ok: false as const, error: "HPP harus angka >= 0." }
   }
 
+  if (input.stockQuantity !== undefined && (!Number.isInteger(input.stockQuantity) || input.stockQuantity < 0)) {
+    return { ok: false as const, error: "Kuantitas stok harus bilangan bulat >= 0." }
+  }
+
   return { ok: true as const, prices: { retail, partai, cabang } }
 }
 
@@ -201,6 +212,7 @@ export function editProduct(input: {
   categoryId?: string
   prices?: Partial<Record<PriceTier, number>>
   hpp?: number
+  stockQuantity?: number
 }) {
   return updateProduct({
     ...input,

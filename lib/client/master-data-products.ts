@@ -60,6 +60,7 @@ export async function createMasterProduct(input: {
   sku: string
   name: string
   categoryId?: string
+  stockQuantity: number
   hpp: number
   prices: Record<PriceTier, number>
 }): Promise<void> {
@@ -78,6 +79,7 @@ export async function updateMasterProduct(input: {
   sku: string
   name: string
   categoryId?: string
+  stockQuantity: number
   hpp: number
   prices: Record<PriceTier, number>
 }): Promise<void> {

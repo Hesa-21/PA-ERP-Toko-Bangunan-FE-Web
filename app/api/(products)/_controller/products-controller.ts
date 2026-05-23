@@ -54,10 +54,11 @@ export async function handleProductsPost(request: Request) {
   const sku = (body.sku ?? "").trim()
   const name = (body.name ?? "").trim()
   const categoryId = (body.categoryId ?? "").trim() || undefined
+  const stockQuantity = Number(body.stockQuantity ?? Number.NaN)
   const prices = body.prices ?? {}
   const hpp = Number(body.hpp ?? Number.NaN)
 
-  const valid = validateCreateProductInput({ sku, name, prices, hpp })
+  const valid = validateCreateProductInput({ sku, name, prices, stockQuantity, hpp })
   if (!valid.ok) return jsonError({ code: "BAD_REQUEST", message: valid.error, status: 400 })
 
   const forbidden = ensureBranchAccess(guard)
@@ -70,6 +71,7 @@ export async function handleProductsPost(request: Request) {
       categoryId,
       prices: valid.prices,
       hpp,
+      stockQuantity,
     })
 
     return NextResponse.json({ product }, { status: 201, headers: { "Cache-Control": "no-store" } })
@@ -91,6 +93,7 @@ export async function handleProductsPut(request: Request) {
   const body = parsedBody.data
   const sku = (body.sku ?? "").trim()
   const name = (body.name ?? "").trim()
+  const stockQuantity = body.stockQuantity !== undefined ? Number(body.stockQuantity) : undefined
 
   const hasCategoryId = Object.prototype.hasOwnProperty.call(body, "categoryId")
   const categoryId = hasCategoryId ? (typeof body.categoryId === "string" ? body.categoryId.trim() : "") : undefined
@@ -101,6 +104,7 @@ export async function handleProductsPut(request: Request) {
   const valid = validateUpdateProductInput({
     sku,
     prices,
+    stockQuantity,
     hpp,
   })
   if (!valid.ok) return jsonError({ code: "BAD_REQUEST", message: valid.error, status: 400 })
@@ -115,6 +119,7 @@ export async function handleProductsPut(request: Request) {
       categoryId,
       prices: valid.prices,
       hpp,
+      stockQuantity,
     })
 
     return NextResponse.json({ product }, { status: 200, headers: { "Cache-Control": "no-store" } })

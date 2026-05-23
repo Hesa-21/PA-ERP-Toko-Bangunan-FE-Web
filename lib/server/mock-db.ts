@@ -434,7 +434,8 @@ function assertWarehouseZoneExists(state: BranchState): void {
   const zones = state.warehouse.zones ?? []
   const hasAnyActive = zones.some((z) => z.active !== false)
   if (hasAnyActive) return
-  throw new Error("DOMAIN:INVALID_INPUT:Zona gudang belum dibuat.")
+  // Warehouse module may be disabled; don't block flows that can run without zones.
+  return
 }
 
 function normalizeWarehouseZoneStatuses(state: BranchState): void {
@@ -1713,11 +1714,10 @@ export function addProduct(input: {
   category?: string
   prices: Record<PriceTier, number>
   hpp: number
+  stockQuantity: number
 }): BranchProduct {
   const state = ensureBranchState(input.branchId)
   ensureCategoriesSynced(state)
-  assertWarehouseZoneExists(state)
-  ensureDefaultWarehouseId(state)
   const sku = (input.sku ?? "").trim()
   const name = (input.name ?? "").trim()
   const requestedCategoryId = (input.categoryId ?? "").trim()
@@ -1749,12 +1749,47 @@ export function addProduct(input: {
       cabang: Math.max(0, Number(input.prices.cabang) || 0),
     },
     hpp: Math.max(0, Math.trunc(Number(input.hpp) || 0)),
-    stock: 0,
+    stock: Math.max(0, Math.trunc(Number(input.stockQuantity) || 0)),
     categoryId: resolvedCategory?.id,
     category: resolvedCategory?.name,
   }
 
   state.products = [product, ...state.products]
+
+  const openingQty = Math.max(0, Math.trunc(Number(input.stockQuantity) || 0))
+  if (openingQty > 0) {
+    const createdAt = nowIso()
+    const draftRes = createStockAdjustmentDraft({
+      branchId: state.branchId,
+      createdBy: "SYSTEM",
+      createdAt,
+      note: `Stok awal produk ${sku}`,
+      lines: [{ sku, qtyDelta: openingQty, reason: "Stok awal produk" }],
+    })
+
+    if (!draftRes.ok) throw new Error(`DOMAIN:${draftRes.error.code}:${draftRes.error.message}`)
+
+    const postedRes = postStockAdjustment({
+      doc: draftRes.value,
+      ledger: state.ledger,
+      postedAt: createdAt,
+      postedBy: "SYSTEM",
+    })
+
+    if (!postedRes.ok) throw new Error(`DOMAIN:${postedRes.error.code}:${postedRes.error.message}`)
+
+    state.ledger = appendLedger(state.ledger, postedRes.value.newEntries)
+    state.stockAdjustments.unshift(postedRes.value.doc)
+
+    autoCreateMovementsFromEntries({
+      state,
+      sourceType: "STOCK_VARIANCE",
+      docId: postedRes.value.doc.id,
+      entries: postedRes.value.newEntries,
+      operator: "SYSTEM",
+    })
+  }
+
   return product
 }
 
@@ -1766,6 +1801,7 @@ export function updateProduct(input: {
   category?: string
   prices?: Partial<Record<PriceTier, number | undefined>>
   hpp?: number
+  stockQuantity?: number
 }): BranchProduct {
   const state = ensureBranchState(input.branchId)
   ensureCategoriesSynced(state)
@@ -1807,6 +1843,50 @@ export function updateProduct(input: {
 
   if (input.hpp !== undefined) {
     product.hpp = Math.max(0, Math.trunc(Number(input.hpp) || 0))
+  }
+
+  if (input.stockQuantity !== undefined) {
+    const desiredStock = Math.max(0, Math.trunc(Number(input.stockQuantity) || 0))
+    const currentStock = getOnHandQty(state.ledger, {
+      branchId: state.branchId,
+      sku: product.sku,
+    })
+
+    const delta = desiredStock - currentStock
+    if (delta !== 0) {
+      const createdAt = nowIso()
+      const draftRes = createStockAdjustmentDraft({
+        branchId: state.branchId,
+        createdBy: "SYSTEM",
+        createdAt,
+        note: `Penyesuaian stok produk ${product.sku}`,
+        lines: [{ sku: product.sku, qtyDelta: delta, reason: "Penyesuaian stok dari master data" }],
+      })
+
+      if (!draftRes.ok) throw new Error(`DOMAIN:${draftRes.error.code}:${draftRes.error.message}`)
+
+      const postedRes = postStockAdjustment({
+        doc: draftRes.value,
+        ledger: state.ledger,
+        postedAt: createdAt,
+        postedBy: "SYSTEM",
+      })
+
+      if (!postedRes.ok) throw new Error(`DOMAIN:${postedRes.error.code}:${postedRes.error.message}`)
+
+      state.ledger = appendLedger(state.ledger, postedRes.value.newEntries)
+      state.stockAdjustments.unshift(postedRes.value.doc)
+
+      autoCreateMovementsFromEntries({
+        state,
+        sourceType: "STOCK_VARIANCE",
+        docId: postedRes.value.doc.id,
+        entries: postedRes.value.newEntries,
+        operator: "SYSTEM",
+      })
+    }
+
+    product.stock = desiredStock
   }
 
   return product

@@ -8,6 +8,7 @@ type SaveProductInput = {
   sku: string
   name: string
   categoryId?: string
+  stockQuantity: number
   hpp: number
   prices: Record<PriceTier, number>
   mode: "create" | "update"
@@ -36,6 +37,7 @@ export function useProductsDialogs(input: {
     sku: "",
     name: "",
     categoryId: "",
+    stockQuantity: "",
     hpp: "",
     retail: "",
     partai: "",
@@ -71,6 +73,7 @@ export function useProductsDialogs(input: {
       sku: "",
       name: "",
       categoryId: "",
+      stockQuantity: "",
       hpp: "",
       retail: "",
       partai: "",
@@ -88,6 +91,7 @@ export function useProductsDialogs(input: {
         sku: p.sku,
         name: p.name,
         categoryId: p.categoryId ?? "",
+        stockQuantity: String(p.stock ?? 0),
         hpp: String(p.hpp ?? 0),
         retail: String(p.prices.retail ?? 0),
         partai: String(p.prices.partai ?? 0),
@@ -224,6 +228,7 @@ export function useProductsDialogs(input: {
         sku: productToRemoveFromCategory.sku,
         name: productToRemoveFromCategory.name,
         categoryId: "",
+        stockQuantity: Number(productToRemoveFromCategory.stock ?? 0),
         hpp: Number(productToRemoveFromCategory.hpp ?? 0),
         prices: productToRemoveFromCategory.prices,
       })
@@ -244,6 +249,7 @@ export function useProductsDialogs(input: {
     const sku = productForm.sku.trim()
     const name = productForm.name.trim()
     const categoryId = (productForm.categoryId ?? "").trim()
+    const stockQuantity = Number(productForm.stockQuantity)
 
     const hpp = Number(productForm.hpp)
 
@@ -253,6 +259,7 @@ export function useProductsDialogs(input: {
 
     if (!sku) return setSubmitError("SKU wajib.")
     if (!name) return setSubmitError("Nama produk wajib.")
+    if (!Number.isInteger(stockQuantity) || stockQuantity < 0) return setSubmitError("Kuantitas stok wajib diisi (bilangan bulat >= 0).")
     if (!Number.isFinite(hpp) || hpp < 0) return setSubmitError("HPP wajib diisi (>= 0).")
     if (![retail, partai, cabang].every((n) => Number.isFinite(n) && n >= 0)) {
       return setSubmitError("Harga retail/partai/cabang wajib diisi (>= 0).")
@@ -265,6 +272,7 @@ export function useProductsDialogs(input: {
         sku,
         name,
         categoryId: categoryId || undefined,
+        stockQuantity,
         hpp,
         prices: { retail, partai, cabang },
       })

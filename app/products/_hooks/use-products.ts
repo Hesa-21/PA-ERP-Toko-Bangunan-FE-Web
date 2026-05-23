@@ -142,6 +142,7 @@ export function useProducts(input: {
       sku: string
       name: string
       categoryId?: string
+      stockQuantity: number
       hpp: number
       prices: Record<PriceTier, number>
       mode: "create" | "update"
@@ -152,6 +153,7 @@ export function useProducts(input: {
         sku: input.sku,
         name: input.name,
         categoryId: input.categoryId,
+        stockQuantity: input.stockQuantity,
         hpp: input.hpp,
         prices: input.prices,
       }

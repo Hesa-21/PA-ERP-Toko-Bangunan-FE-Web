@@ -24,7 +24,7 @@ export function ProductFormDialog(props: {
       <DialogContent className="max-h-[80vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>{props.productToEdit ? "Ubah Produk" : "Tambah Produk"}</DialogTitle>
-          <DialogDescription>Isi SKU, nama, kategori, dan harga jual.</DialogDescription>
+          <DialogDescription>Isi SKU, nama, kategori, stok awal, dan harga jual.</DialogDescription>
         </DialogHeader>
         <div className="grid gap-3 py-2">
           {props.submitError && (
@@ -76,6 +76,17 @@ export function ProductFormDialog(props: {
                   )}
               </SelectContent>
             </Select>
+          </div>
+          <div className="grid gap-2">
+            <div className="text-sm font-medium">Kuantitas Stok Awal</div>
+            <Input
+              type="number"
+              min={0}
+              step={1}
+              value={props.productForm.stockQuantity}
+              onChange={(e) => props.onProductFormChange((p) => ({ ...p, stockQuantity: e.target.value }))}
+              placeholder="Contoh: 25"
+            />
           </div>
           <div className="grid gap-2">
             <div className="text-sm font-medium">HPP</div>
