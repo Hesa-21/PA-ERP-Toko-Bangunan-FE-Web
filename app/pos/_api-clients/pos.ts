@@ -1,9 +1,7 @@
 import { apiFetchJson, apiPostJson } from "@/lib/client/http"
 import { fetchProductCategories } from "@/lib/client/master-data-products"
-import { fetchWarehouseSnapshot } from "@/lib/client/warehouse"
 import type { CategoryDto, ProductDto } from "@/lib/domain/master-data-products"
 import type { PriceTier } from "@/lib/domain/types"
-import type { WarehouseZoneDto, ZoneStocksDto } from "@/lib/domain/warehouse"
 import type { PosPaymentStatus } from "@/lib/domain/pos"
 
 export type PosProductDto = ProductDto
@@ -22,9 +20,21 @@ export type PosProductZoneBalanceDto = {
   lines: PosProductZoneBalanceLineDto[]
 }
 
-export type PosWarehouseZoneDto = Pick<WarehouseZoneDto, "id" | "name">
+export type PosWarehouseZoneDto = {
+  id: string
+  name: string
+}
 
-export type PosWarehouseZoneStockSummaryDto = ZoneStocksDto
+export type PosWarehouseZoneStockLineDto = {
+  sku: string
+  name?: string
+  normalQty: number
+  damagedQty: number
+  expiredQty: number
+  totalQty: number
+}
+
+export type PosWarehouseZoneStockSummaryDto = Record<string, PosWarehouseZoneStockLineDto[]>
 
 export type PosSalesDocumentDto = {
   id: string
@@ -93,11 +103,50 @@ function writePosProductsCache(url: string, data: { products: PosProductDto[]; t
 export type { CategoryDto }
 
 export async function fetchPosZonesApi() {
-  const snap = await fetchWarehouseSnapshot({})
+  const balances = await fetchPosProductZoneBalancesApi({})
+
+  const zonesById = new Map<string, PosWarehouseZoneDto>()
+  const zoneStocks: PosWarehouseZoneStockSummaryDto = {}
+
+  for (const balance of balances.items ?? []) {
+    const sku = String(balance?.sku ?? "").trim()
+    if (!sku) continue
+
+    for (const line of balance.lines ?? []) {
+      const zoneId = String(line?.zoneId ?? "").trim()
+      if (!zoneId) continue
+
+      const zoneName = String(line?.zoneName ?? "").trim() || zoneId
+      if (!zonesById.has(zoneId)) {
+        zonesById.set(zoneId, { id: zoneId, name: zoneName })
+      }
+
+      const normalQty = Math.max(0, Math.trunc(Number(line?.normalQty ?? 0)))
+      if (normalQty <= 0) continue
+
+      if (!zoneStocks[zoneId]) zoneStocks[zoneId] = []
+      zoneStocks[zoneId].push({
+        sku,
+        normalQty,
+        damagedQty: 0,
+        expiredQty: 0,
+        totalQty: normalQty,
+      })
+    }
+  }
+
+  for (const lines of Object.values(zoneStocks)) {
+    lines.sort((a, b) => a.sku.localeCompare(b.sku, "id"))
+  }
+
+  const zones = Array.from(zonesById.values()).sort(
+    (a, b) => a.name.localeCompare(b.name, "id") || a.id.localeCompare(b.id, "id")
+  )
+
   return {
-    zones: (snap.zones ?? []).map((z) => ({ id: z.id, name: z.name })),
-    defaultWarehouseId: snap.defaultWarehouseId,
-    zoneStocks: snap.zoneStocks,
+    zones,
+    defaultWarehouseId: zones[0]?.id ?? "",
+    zoneStocks,
   }
 }
 
