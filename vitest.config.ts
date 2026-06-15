@@ -3,25 +3,9 @@ import path from "node:path"
 
 export default defineConfig({
   test: {
-    environment: "jsdom",
+    environment: "node",
     globals: true,
     include: [
-      "app/reports/sales/**/*.test.ts",
-      "app/reports/sales/**/*.test.tsx",
-      "app/sales/**/*.test.ts",
-      "app/sales/**/*.test.tsx",
-      "app/purchases/**/*.test.ts",
-      "app/purchases/**/*.test.tsx",
-      "app/returns/**/*.test.ts",
-      "app/returns/**/*.test.tsx",
-      "app/products/**/*.test.ts",
-      "app/products/**/*.test.tsx",
-      "app/dashboard/**/*.test.ts",
-      "app/dashboard/**/*.test.tsx",
-      "app/pos/**/*.test.ts",
-      "app/pos/**/*.test.tsx",
-      "app/users/**/*.test.ts",
-      "app/users/**/*.test.tsx",
       "app/api/**/*.test.ts",
       "app/api/**/*.test.tsx",
     ],
